@@ -2,26 +2,60 @@ La configuration des VLANs est essentielle pour segmenter un réseau en domaines
 
 Ces configurations ont été sauvegardées et structurées pour une publication sur GitHub, permettant une collaboration et une documentation détaillée. Les scripts CLI pour le switch et le routeur, un fichier Packet Tracer pour la simulation, et un README documentant chaque étape ont été inclus. Le README décrit les objectifs, l'architecture réseau et les instructions détaillées pour reproduire ou modifier la configuration. Cette approche garantit une organisation claire, facilite le dépannage et encourage le partage de solutions réseau optimales avec d’autres administrateurs et collaborateurs. Le projet est maintenant disponible sur une plateforme collaborative, renforçant l’apprentissage et l’adoption des meilleures pratiques en gestion réseau.
  
- VLAN Configuration Project
 
-**Objectifs**
-1. Isoler les départements en créant des VLANs logiques.
-2. Permettre la communication inter-VLAN via le routage inter-VLAN.
-3. Documenter les configurations pour faciliter leur réutilisation.
+Objectifs des Configurations VLAN
 
-## **Architecture Réseau**
-- Routeur : Cisco 2901
-- Switch : Cisco 2950-24
-- Plages IP des VLANs :
-  - VLAN 10 (Bureau1) : 192.168.10.0/24
-  - VLAN 20 (Bureau2) : 192.168.20.0/24
+    Création de VLANs :
+        Assigner différents VLANs à des bureaux ou départements spécifiques.
+    Segmentation du réseau :
+        Améliorer les performances et réduire les conflits réseau en isolant les segments.
+    Routage inter-VLAN :
+        Permettre la communication sécurisée entre VLANs via un routeur ou un switch de niveau 3.
+    Documentation collaborative :
+        Partager les configurations et étapes sur GitHub pour faciliter leur réutilisation, modification ou discussion.
 
-## **Instructions**
-### Étape 1 : Configuration des VLANs sur le switch
-1. Connectez-vous au switch via CLI.
-2. Créez les VLANs avec les commandes ci-dessous :
-   ```bash
-   vlan 10
-   name Bureau1
-   vlan 20
-   name Bureau2
+Étapes de Préparation : Configuration et Mise en Ligne
+1. Préparer les Configurations des Équipements
+
+    Créez des scripts ou des commandes que vous avez exécutées sur vos équipements Cisco Packet Tracer.
+
+Exemple de Configuration des VLANs (Sur le Switch)
+
+# Création des VLANs
+Switch(config)# vlan 10
+Switch(config-vlan)# name Bureau1
+Switch(config-vlan)# exit
+
+Switch(config)# vlan 20
+Switch(config-vlan)# name Bureau2
+Switch(config-vlan)# exit
+
+# Configuration des ports assignés aux VLANs
+Switch(config)# interface FastEthernet0/1
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 10
+Switch(config-if)# exit
+
+Switch(config)# interface FastEthernet0/2
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 20
+Switch(config-if)# exit
+
+# Configuration du Trunk pour la communication avec le routeur
+Switch(config)# interface GigabitEthernet0/1
+Switch(config-if)# switchport mode trunk
+Switch(config-if)# exit
+
+Configuration Routage Inter-VLAN (Sur le Routeur)
+
+# Configuration des sous-interfaces
+Router(config)# interface GigabitEthernet0/0.10
+Router(config-subif)# encapsulation dot1Q 10
+Router(config-subif)# ip address 192.168.10.1 255.255.255.0
+Router(config-subif)# exit
+
+Router(config)# interface GigabitEthernet0/0.20
+Router(config-subif)# encapsulation dot1Q 20
+Router(config-subif)# ip address 192.168.20.1 255.255.255.0
+Router(config-subif)# exit
+
